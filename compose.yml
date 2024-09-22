@@ -1,9 +1,6 @@
 services:
   app-server:
     image: ghcr.io/contour-gara/gara-photo-app-server:2.0.20240922012018
-    depends_on:
-      mysql:
-        condition: service_healthy
     ports:
       - "8080:8080"
     networks:
@@ -18,9 +15,9 @@ services:
       - ./photo:/opt/photo
     environment:
       SPRING_PROFILES_ACTIVE: prd
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gara_photo
-      SPRING_DATASOURCE_USERNAME: gara
-      SPRING_DATASOURCE_PASSWORD: ${GARA_PHOTO_DB_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/gara_photo?sslMode=VERIFY_IDENTITY
+      SPRING_DATASOURCE_USERNAME: ${TIDB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${TIDB_PASSWORD}
       APPLICATION_REPOSITORY: jdbc-client
       TWITTER_OAUTH1_ACCESS_TOKEN: ${GARA_PHOTO_OAUTH1_ACCESS_TOKEN:-oauth1-access-token-dummy}
       TWITTER_OAUTH1_ACCESS_TOKEN_SECRET: ${GARA_PHOTO_OAUTH1_ACCESS_TOKEN_SECRET:-oauth1-access-token-secret-dummy}
@@ -30,25 +27,6 @@ services:
       TWITTER_CLIENT_SECRET: ${GARA_PHOTO_CLIENT_SECRET:-client-secret-dummy}
       TWITTER_REDIRECT_URI: ${GARA_PHOTO_REDIRECT_URI:-http://localhost/dummy}
       TZ: Asia/Tokyo
-
-  mysql:
-    image: mysql:9.0.1-oraclelinux9
-    environment:
-      MYSQL_USER: gara
-      MYSQL_PASSWORD: ${GARA_PHOTO_DB_PASSWORD}
-      MYSQL_DATABASE: gara_photo
-      MYSQL_ROOT_PASSWORD: root
-      TZ: "Asia/Tokyo"
-    networks:
-      - gara-photo-nw
-    ports:
-      - '3306:3306'
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
 
 networks:
   gara-photo-nw:
