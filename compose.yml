@@ -1,6 +1,6 @@
 services:
   app-server:
-    image: ghcr.io/contour-gara/gara-photo-app-server:2.0.20240922012018
+    image: ghcr.io/contour-gara/gara-photo-app-server:2.0.20240922223415
     ports:
       - "8080:8080"
     networks:
@@ -26,7 +26,6 @@ services:
       TWITTER_CLIENT_ID: ${GARA_PHOTO_CLIENT_ID:-client-id-dummy}
       TWITTER_CLIENT_SECRET: ${GARA_PHOTO_CLIENT_SECRET:-client-secret-dummy}
       TWITTER_REDIRECT_URI: ${GARA_PHOTO_REDIRECT_URI:-http://localhost/dummy}
-      TZ: Asia/Tokyo
 
 networks:
   gara-photo-nw:
